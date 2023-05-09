@@ -37,7 +37,7 @@ class Client(_Parent):
     """
 
     defaultClients = {
-        "bin-picking": BinPicking,
+        "bin_picking": BinPicking,
     }
 
     def __init__(self, url=None, context="corbaserver"):
@@ -48,5 +48,5 @@ class Client(_Parent):
                     url = "corbaloc:iiop:<host>:<port>/NameService"
         """
         self._initOrb(url)
-        self._makeClients("bin-picking", self.defaultClients, context)
+        self._makeClients("bin_picking", self.defaultClients, context)
 

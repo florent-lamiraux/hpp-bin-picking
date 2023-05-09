@@ -29,22 +29,28 @@
 #ifndef HPP_BIN_PICKING_FWD_IMPL_HH
 #define HPP_BIN_PICKING_FWD_IMPL_HH
 
-#include <hpp/constraints/fwd.hh>
+#include <hpp/manipulation/fwd.hh>
 
 namespace hpp{
 namespace bin_picking{
 
 typedef pinocchio::Configuration_t Configuration_t;
+typedef pinocchio::matrix_t matrix_t;
+typedef pinocchio::matrix3_t matrix3_t;
 typedef pinocchio::vector_t vector_t;
+typedef pinocchio::vector3_t vector3_t;
 typedef pinocchio::vectorIn_t vectorIn_t;
 typedef pinocchio::vectorOut_t vectorOut_t;
-typedef pinocchio::Device Device;
-typedef pinocchio::DevicePtr_t DevicePtr_t;
+typedef pinocchio::size_type size_type;
+typedef pinocchio::GripperPtr_t GripperPtr_t;
+typedef pinocchio::GripperWkPtr_t GripperWkPtr_t;
 typedef pinocchio::JointPtr_t JointPtr_t;
 typedef pinocchio::LiegroupSpacePtr_t LiegroupSpacePtr_t;
 typedef pinocchio::LiegroupSpaceConstPtr_t LiegroupSpaceConstPtr_t;
 typedef pinocchio::size_type size_type;
 typedef pinocchio::LiegroupSpace LiegroupSpace;
+typedef pinocchio::SE3 SE3;
+typedef pinocchio::CollisionGeometryPtr_t CollisionGeometryPtr_t;
 
 typedef constraints::DifferentiableFunctionPtr_t DifferentiableFunctionPtr_t;
 typedef constraints::Explicit Explicit;
@@ -55,10 +61,12 @@ typedef hpp::constraints::function::OfParameterSubset OfParameterSubset;
 typedef constraints::segment_t segment_t;
 typedef constraints::segments_t segments_t;
 typedef constraints::solver::BySubstitution Solver_t;
-typedef constraints::size_type size_type;
-  
-HPP_PREDEF_CLASS(ExplicitConstraint);
-typedef hpp::shared_ptr<ExplicitConstraint> ExplicitConstraintPtr_t;
+
+typedef manipulation::Device Device;
+typedef manipulation::DevicePtr_t DevicePtr_t;
+
+HPP_PREDEF_CLASS(Effector);
+typedef hpp::shared_ptr<Effector> EffectorPtr_t;
 
 } // namespace bin_picking
 } // namespace hpp

@@ -28,10 +28,16 @@
 
 #include <../corba/bin-picking.hh>
 #include <../corba/bin-picking.impl.hh>
+
 #include <hpp/corbaserver/server.hh>
+
+#include <hpp/manipulation/problem-solver.hh>
 
 namespace hpp{
 namespace bin_picking{
+
+typedef hpp::manipulation::ProblemSolver ProblemSolver;
+typedef hpp::manipulation::ProblemSolverPtr_t ProblemSolverPtr_t;
 
 Server::Server(corbaServer::Server* parent) : corbaServer::ServerPlugin(parent),
                                               binPickingImpl_(0x0)
@@ -43,22 +49,30 @@ Server::~Server()
   if (binPickingImpl_) delete binPickingImpl_;
 }
 
-std::string Server::name() const { return "bin-picking"; }
+std::string Server::name() const { return "bin_picking"; }
 
 /// Start corba server
 void Server::startCorbaServer(const std::string& contextId,
                               const std::string& contextKind) {
-  initializeTplServer(binPickingImpl_, contextId, contextKind, name(), "bin-picking");
+  initializeTplServer(binPickingImpl_, contextId, contextKind, name(), "bin_picking");
 
   binPickingImpl_->implementation().setServer(this);
 }
 
-hpp::core::ProblemSolverPtr_t Server::problemSolver() {
-  return problemSolverMap_->selected();
+ProblemSolverPtr_t Server::problemSolver() {
+  ProblemSolverPtr_t ret(dynamic_cast<hpp::manipulation::ProblemSolverPtr_t>
+                         (problemSolverMap_->selected()));
+  if (!ret){
+    std::ostringstream os;
+    os << "Selected problem solver \"" << problemSolverMap_->selectedName()
+       << "\" is not of type hpp::manipulation::ProblemSolver";
+    throw std::logic_error(os.str().c_str());
+  }
+  return ret;
 }
 
 ::CORBA::Object_ptr Server::servant(const std::string& name) const {
-  if (name == "bin-picking") return binPickingImpl_->implementation()._this();
+  if (name == "bin_picking") return binPickingImpl_->implementation()._this();
   throw std::invalid_argument("No servant " + name);
 }
 

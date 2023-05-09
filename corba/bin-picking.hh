@@ -39,7 +39,7 @@ public:
   Server(corbaServer::Server* parent);
     ~Server();
   std::string name() const;
-  core::ProblemSolverPtr_t problemSolver();
+  manipulation::ProblemSolverPtr_t problemSolver();
   /// Call hpp::corba::Server <impl::BinPicking>::startCorbaServer
   void startCorbaServer(const std::string& contextId,
                         const std::string& contextKind);

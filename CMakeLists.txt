@@ -45,7 +45,7 @@ include(cmake/python.cmake)
 
 option(CORBA "Implement CORBA server and client" ON)
 
-set(PLUGIN_NAME bin-picking)
+set(PLUGIN_NAME bin_picking)
 compute_project_args(PROJECT_ARGS LANGUAGES CXX)
 project(${PROJECT_NAME} ${PROJECT_ARGS})
 
@@ -56,12 +56,12 @@ add_project_dependency(hpp-manipulation)
 # Library
 set(${PROJECT_NAME}_HEADERS
   include/hpp/bin-picking/fwd.hh
-  include/hpp/bin-picking/class1.hh)
+  include/hpp/bin-picking/effector.hh)
 set(${PROJECT_NAME}_SOURCES
-  src/class1.cc)
+  src/effector.cc)
 add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES}
                                    ${${PROJECT_NAME}_HEADERS})
-target_link_libraries(${PROJECT_NAME} PUBLIC hpp-constraints::hpp-constraints)
+target_link_libraries(${PROJECT_NAME} PUBLIC hpp-manipulation::hpp-manipulation)
 install(TARGETS ${PROJECT_NAME} EXPORT ${TARGETS_EXPORT_NAME}
   DESTINATION lib)
 

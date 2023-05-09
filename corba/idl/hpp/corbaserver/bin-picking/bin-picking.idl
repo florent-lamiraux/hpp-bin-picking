@@ -35,6 +35,37 @@ module hpp {
   module corbaserver {
     module bin_picking {
       interface BinPicking {
+        /// Create a rigid body object containing the geometries of an end effector
+        /// The geometries belonging to the joints that are fixed with respect
+        /// to the \link hpp::pinocchio::Gripper gripper are gathered with their
+        /// relative pose with respect to the gripper frame.
+        ///
+        /// \param name name of the effector that is created,
+        /// \param gripperName name of the gripper,
+        /// \param q configuration that provides the relative pose between
+        ///        objects,
+        /// \param transitionId index of the transition that defines the
+        ///        relative motions between joints.
+        void createEffector(in string name, in string gripperName,
+                            in floatSeq q, in long transitionId) raises(Error);
+        /// Add obstacle to an end effector
+        /// \param effectorName name of the effector,
+        /// \param obstacleName name of the obstacle (geometry in pinocchio),
+        /// \param securityMargin security margin for the collision tests.
+        void addObstacleToEffector(in string effectorName,
+            in string obstacleName, in double securityMargin) raises(Error);
+        /// Test collision of an effector
+        /// \param name name of the effector,
+        /// \param gripperPose pose of the gripper,
+        /// \param q configuration of the system,
+        /// \retval report message in case of collision,
+        /// \return true if there is a collision.
+        /// \note the configuration does not neet to specify all the robot
+        ///       and object configurations, but only those that have been
+        ///       added as obstacle to the effector.
+        boolean collisionTest(in string name, in Transform_ gripperPose,
+                              in floatSeq q, out string report)
+          raises(Error);
       };
     }; // interface BinPicking
   }; // module bin_picking

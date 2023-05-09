@@ -29,9 +29,9 @@
 #ifndef HPP_BIN_PICKING_CORBA_BIN_PICKING_IMPL_HH
 #define HPP_BIN_PICKING_CORBA_BIN_PICKING_IMPL_HH
 
+#include <hpp/bin-picking/fwd.hh>
 #include <corba/bin-picking-idl.hh>
-#include <hpp/core/fwd.hh>
-#include <hpp/bin-picking/class1.hh>
+#include <hpp/manipulation/fwd.hh>
 
 namespace hpp {
 namespace bin_picking {
@@ -44,10 +44,19 @@ public:
   BinPicking();
   void setServer(Server* server) { server_ = server; }
 
+  virtual void createEffector(const char* name, const char* gripperName,
+                              const floatSeq& q, CORBA::Long transitionId);
+  virtual void addObstacleToEffector(const char* effectorName,
+      const char* obstacleName, double securityMargin);
+  virtual ::CORBA::Boolean collisionTest(const char* name,
+      const Transform_ gripperPose, const ::hpp::floatSeq& q,
+      CORBA::String_out report);
 private:
-  core::ProblemSolverPtr_t problemSolver();
+  EffectorPtr_t getEffectorOrThrow(const char* name);
+  manipulation::ProblemSolverPtr_t problemSolver();
   DevicePtr_t getRobotOrThrow();
   Server* server_;
+  std::map <std::string, EffectorPtr_t> effectors_;
 }; // class BinPicking
 } // namespace impl
 } // namespace bin_picking
