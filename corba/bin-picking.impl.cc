@@ -155,13 +155,19 @@ void BinPicking::discretizeHandle(const char* name, CORBA::Long nbHandles)
     std::vector<HandlePtr_t> handles(::hpp::bin_picking::discretizeHandle(
                                      handle, nbHandles));
     for (HandlePtr_t h : handles) {
+      std::string jointName("universe");
+      if (h->joint()) jointName = h->joint()->name();
       robot->handles.add(h->name(), h);
       // Add frame to pinocchio model
-      assert(robot->model().existJointName(h->joint()->name()));
-      JointIndex parent(robot->model().getJointId(h->joint()->name()));
-      robot->model().addFrame(Frame(h->name(), parent, -1, h->localPosition(),
-                                    ::pinocchio::OP_FRAME));
+      assert(robot->model().existJointName(jointName));
+      JointIndex parent(robot->model().getJointId(jointName));
+      assert(robot->model().existFrame(jointName));
+      FrameIndex previousFrame(robot->model().getFrameId(jointName));
+      robot->model().addFrame(Frame(h->name(), parent, previousFrame,
+          h->localPosition(), ::pinocchio::OP_FRAME));
     }
+    // Recreate pinocchio data after modifying model
+    robot->createData();
     updateEffectors();
   } catch(const std::exception &exc) {
     throw Error(exc.what());
