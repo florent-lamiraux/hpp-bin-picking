@@ -33,6 +33,7 @@
 #include <hpp/pinocchio/joint-collection.hh>
 
 #include <hpp/manipulation/device.hh>
+#include <hpp/manipulation/handle.hh>
 
 namespace hpp{
 namespace bin_picking{
@@ -47,10 +48,17 @@ EffectorPtr_t Effector::create(const DevicePtr_t& robot,
 Effector::Effector(const DevicePtr_t& robot,
     const pinocchio::GripperPtr_t& gripper, const Configuration_t& q,
     const RelativeMotion::matrix_type& relativeMotion) :
+  robot_(robot),
   model_(robot->model()), geomModel_(robot->geomModel()), data_(model_),
   geomData_(geomModel_), gripper_(gripper)
 {
   buildEffector(q, relativeMotion);
+}
+
+void Effector::updateData()
+{
+  data_ = pinocchio::Data(model_);
+  geomData_ = ::pinocchio::GeometryData(geomModel_);
 }
 
 std::ostream& Effector::print(std::ostream& os) const
@@ -105,22 +113,31 @@ void Effector::addObstacle(const std::string& name, double securityMargin)
   }
 }
 
-bool Effector::collisionTest(const SE3& gripperPose, const Configuration_t& q,
-                             std::string& report)
+bool Effector::collisionTest(const HandlePtr_t &handle,
+    const Configuration_t& q, std::string& report)
 {
   // Compute forward kinematics;
   ::pinocchio::forwardKinematics(model_, data_, q);
   ::pinocchio::updateFramePlacements(model_, data_);
   ::pinocchio::updateGeometryPlacements(model_, data_, geomModel_, geomData_);
 
+  double clearance(gripper_.lock()->clearance() + handle->clearance());
+  matrix3_t I3(matrix3_t::Identity());
+  vector3_t trans; trans << -clearance, 0, 0;
+  SE3 pgOffset(I3, trans);
   fcl::CollisionResult result;
   std::size_t i=0;
   report = std::string("collision between ");
   bool res(false);
+  assert(model_.existFrame(handle->name()));
+  FrameIndex hid(model_.getFrameId(handle->name()));
+  SE3 gripperPose(data_.oMf[hid]);
+  // Test grasp
   for(auto obstacle : obstacles_) {
     // recover pose of obstacle
     const SE3& obstaclePose(geomData_.oMg[obstacle.first]);
-    const std::string& obstName(geomModel_.geometryObjects[obstacle.first].name);
+    const std::string& obstName(geomModel_.geometryObjects[obstacle.first].
+                                name);
     std::size_t iObj=0;
     for(auto inner : innerObjects_) {
       SE3 innerPose(gripperPose*inner.second);
@@ -139,7 +156,42 @@ bool Effector::collisionTest(const SE3& gripperPose, const Configuration_t& q,
       ++i; ++iObj;
     }
   }
-  return res;
+  if (res) {
+    report += std::string("in grasp");
+    return true;
+  }
+  // Test pregrasp
+  gripperPose = gripperPose * pgOffset;
+  i = 0;
+  for(auto obstacle : obstacles_) {
+    // recover pose of obstacle
+    const SE3& obstaclePose(geomData_.oMg[obstacle.first]);
+    const std::string& obstName(geomModel_.geometryObjects[obstacle.first].
+                                name);
+    std::size_t iObj=0;
+    for(auto inner : innerObjects_) {
+      SE3 innerPose(gripperPose*inner.second);
+      std::size_t n(computeCollisions_[i](
+          fcl::Transform3f(innerPose.rotation(), innerPose.translation()),
+          fcl::Transform3f(obstaclePose.rotation(), obstaclePose.translation()),
+          collisionRequests_[i], result)
+          );
+      if (n > 0){
+        report += innerObjNames_[iObj];
+        report += std::string(" and ");
+        report += obstName;
+        report += std::string(", ");
+        res = true;
+      }
+      ++i; ++iObj;
+    }
+  }
+  if (res) {
+    report += std::string("in pregrasp");
+    return true;
+  }
+  report = std::string("");
+  return false;
 }
 
 } // namespace bin_picking

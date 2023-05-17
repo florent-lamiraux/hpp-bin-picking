@@ -52,9 +52,6 @@ typedef core::RelativeMotion RelativeMotion;
 /// without solving the nonlinear constraint.
 class Effector{
 public:
-  typedef ::pinocchio::JointIndex JointIndex;
-  typedef ::pinocchio::FrameIndex FrameIndex;
-  typedef ::pinocchio::GeomIndex GeomIndex;
   /// Create instance and return share pointer
   /// \param robot the robot that owns the gripper,
   /// \param gripper the gripper hold by the effector
@@ -67,17 +64,22 @@ public:
      const pinocchio::GripperPtr_t& gripper,
      const Configuration_t& q,
      const RelativeMotion::matrix_type& relativeMotion);
+  /// Update data and geomData members after the model has been changed
+  void updateData();
   /// Add an obstacle to the effector
   /// \param name name of the obstacle in pinocchio::GeometryModel,
   /// \param securityMargin security margin for collision tests.
   void addObstacle(const std::string& name, double securityMargin);
-  /// Test collision for a given configuration
-  /// \param gripperPose pose of the gripper,
+  /// Test collision for a given handle in a given configuration
+  /// \param handle handle to align the gripper with
   /// \param q configuration used to compute the pose of all geometries in the
   ///          world frame.
+  /// \param clearance offset applied along -x axis to test pregrasp
+  ///        configurations,
   /// \retval report validation report with information in case of collision
   /// \return true if there is a collision.
-  bool collisionTest(const SE3& gripperPose, const Configuration_t& q,
+  /// \note pregrasp pose of the effector is also tested.
+  bool collisionTest(const HandlePtr_t &handle, const Configuration_t& q,
                      std::string& report);
   /// Print object in a stream;
   virtual std::ostream& print(std::ostream& os) const;
@@ -107,6 +109,7 @@ private:
   // their pose with respect to the gripper frame.
   void buildEffector(const Configuration_t& q,
                      const RelativeMotion::matrix_type& relativeMotion);
+  DevicePtr_t robot_;
   const pinocchio::Model& model_;
   const ::pinocchio::GeometryModel& geomModel_;
   pinocchio::Data data_;

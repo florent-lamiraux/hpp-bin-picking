@@ -56,15 +56,16 @@ module hpp {
             in string obstacleName, in double securityMargin) raises(Error);
         /// Test collision of an effector
         /// \param name name of the effector,
-        /// \param gripperPose pose of the gripper,
+        /// \param handle name of the handle the gripper is aligned with,
         /// \param q configuration of the system,
         /// \retval report message in case of collision,
         /// \return true if there is a collision.
         /// \note the configuration does not neet to specify all the robot
         ///       and object configurations, but only those that have been
-        ///       added as obstacle to the effector.
-        boolean collisionTest(in string name, in Transform_ gripperPose,
-                              in floatSeq q, out string report)
+        ///       added as obstacle to the effector and the one that holds the
+        ///       handle.
+        boolean collisionTest(in string name, in string handle, in floatSeq q,
+                              out string report)
           raises(Error);
         /// Discretize handle
         /// Create several handles by discretizing the free axis of rotation.

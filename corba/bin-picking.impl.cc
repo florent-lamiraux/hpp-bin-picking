@@ -29,6 +29,8 @@
 #include <../corba/bin-picking.impl.hh>
 #include <../corba/bin-picking.hh>
 
+#include <pinocchio/multibody/frame.hpp>
+
 #include <hpp/pinocchio/gripper.hh>
 #include <hpp/pinocchio/liegroup-space.hh>
 
@@ -117,16 +119,24 @@ void BinPicking::addObstacleToEffector(const char* effectorName,
   }
 }
 
-CORBA::Boolean BinPicking::collisionTest(const char* name,
-      const Transform_ gripperPose, const ::hpp::floatSeq& q,
-      CORBA::String_out report)
+CORBA::Boolean BinPicking::collisionTest(const char* name, const char* handle,
+      const ::hpp::floatSeq& q, CORBA::String_out report)
 {
   try{
-    SE3 gp(corbaServer::toTransform3f(gripperPose));
     EffectorPtr_t effector(getEffectorOrThrow(name));
+    DevicePtr_t robot(getRobotOrThrow());
+    HandlePtr_t h;
+    try{
+      h = robot->handles.get(std::string(handle));
+    }
+    catch(const std::invalid_argument& exc){
+      std::string msg(std::string("No handle with name ") +
+                      std::string(handle));
+      throw Error(msg.c_str());
+    }
     std::string collisionReport;
     bool res(
-        effector->collisionTest(gp, corbaServer::floatSeqToVector(q),
+        effector->collisionTest(h, corbaServer::floatSeqToVector(q),
                                 collisionReport)
         );
     report = CORBA::string_dup(collisionReport.c_str());
@@ -139,15 +149,29 @@ CORBA::Boolean BinPicking::collisionTest(const char* name,
 void BinPicking::discretizeHandle(const char* name, CORBA::Long nbHandles)
 {
   try {
+    typedef ::pinocchio::Frame Frame;
     DevicePtr_t robot(getRobotOrThrow());
     HandlePtr_t handle(robot->handles.get(std::string(name)));
     std::vector<HandlePtr_t> handles(::hpp::bin_picking::discretizeHandle(
                                      handle, nbHandles));
     for (HandlePtr_t h : handles) {
       robot->handles.add(h->name(), h);
+      // Add frame to pinocchio model
+      assert(robot->model().existJointName(h->joint()->name()));
+      JointIndex parent(robot->model().getJointId(h->joint()->name()));
+      robot->model().addFrame(Frame(h->name(), parent, -1, h->localPosition(),
+                                    ::pinocchio::OP_FRAME));
     }
+    updateEffectors();
   } catch(const std::exception &exc) {
     throw Error(exc.what());
+  }
+}
+
+void BinPicking::updateEffectors()
+{
+  for (auto pair : effectors_){
+    pair.second->updateData();
   }
 }
 

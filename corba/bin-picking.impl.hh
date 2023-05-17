@@ -48,11 +48,11 @@ public:
                               const floatSeq& q, CORBA::Long transitionId);
   virtual void addObstacleToEffector(const char* effectorName,
       const char* obstacleName, double securityMargin);
-  virtual ::CORBA::Boolean collisionTest(const char* name,
-      const Transform_ gripperPose, const ::hpp::floatSeq& q,
-      CORBA::String_out report);
+  virtual ::CORBA::Boolean collisionTest(const char* name, const char* handle,
+      const ::hpp::floatSeq& q, CORBA::String_out report);
   virtual void discretizeHandle(const char* name, CORBA::Long nbHandles);
 private:
+  void updateEffectors();
   EffectorPtr_t getEffectorOrThrow(const char* name);
   manipulation::ProblemSolverPtr_t problemSolver();
   DevicePtr_t getRobotOrThrow();

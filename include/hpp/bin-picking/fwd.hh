@@ -34,6 +34,10 @@
 namespace hpp{
 namespace bin_picking{
 
+typedef ::pinocchio::JointIndex JointIndex;
+typedef ::pinocchio::FrameIndex FrameIndex;
+typedef ::pinocchio::GeomIndex GeomIndex;
+
 typedef pinocchio::Configuration_t Configuration_t;
 typedef pinocchio::matrix_t matrix_t;
 typedef pinocchio::matrix3_t matrix3_t;
