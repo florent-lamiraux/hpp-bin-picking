@@ -40,6 +40,7 @@
 #include <hpp/manipulation/problem-solver.hh>
 
 #include <hpp/bin-picking/effector.hh>
+#include <hpp/bin-picking/handle.hh>
 
 namespace hpp {
 namespace bin_picking {
@@ -135,6 +136,20 @@ CORBA::Boolean BinPicking::collisionTest(const char* name,
   }
 }
 
+void BinPicking::discretizeHandle(const char* name, CORBA::Long nbHandles)
+{
+  try {
+    DevicePtr_t robot(getRobotOrThrow());
+    HandlePtr_t handle(robot->handles.get(std::string(name)));
+    std::vector<HandlePtr_t> handles(::hpp::bin_picking::discretizeHandle(
+                                     handle, nbHandles));
+    for (HandlePtr_t h : handles) {
+      robot->handles.add(h->name(), h);
+    }
+  } catch(const std::exception &exc) {
+    throw Error(exc.what());
+  }
+}
 
 } // namespace impl
 } // namespace bin_picking

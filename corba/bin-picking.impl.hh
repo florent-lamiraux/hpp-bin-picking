@@ -51,6 +51,7 @@ public:
   virtual ::CORBA::Boolean collisionTest(const char* name,
       const Transform_ gripperPose, const ::hpp::floatSeq& q,
       CORBA::String_out report);
+  virtual void discretizeHandle(const char* name, CORBA::Long nbHandles);
 private:
   EffectorPtr_t getEffectorOrThrow(const char* name);
   manipulation::ProblemSolverPtr_t problemSolver();

@@ -66,6 +66,15 @@ module hpp {
         boolean collisionTest(in string name, in Transform_ gripperPose,
                               in floatSeq q, out string report)
           raises(Error);
+        /// Discretize handle
+        /// Create several handles by discretizing the free axis of rotation.
+        /// \param name name of the handle,
+        /// \param nbHandles number of new handles.
+        /// \note the handle should have only one false flag out of three for
+        ///       rotation degrees of freedom and none for translation degrees
+        ///       of freedom.
+        /// \note new handles are created and added to the problem solver.
+        void discretizeHandle(in string name, in long nbHandles) raises(Error);
       };
     }; // interface BinPicking
   }; // module bin_picking

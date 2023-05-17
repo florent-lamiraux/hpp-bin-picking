@@ -64,6 +64,8 @@ typedef constraints::solver::BySubstitution Solver_t;
 
 typedef manipulation::Device Device;
 typedef manipulation::DevicePtr_t DevicePtr_t;
+typedef manipulation::Handle Handle;
+typedef manipulation::HandlePtr_t HandlePtr_t;
 
 HPP_PREDEF_CLASS(Effector);
 typedef hpp::shared_ptr<Effector> EffectorPtr_t;

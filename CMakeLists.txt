@@ -56,7 +56,9 @@ add_project_dependency(hpp-manipulation)
 # Library
 set(${PROJECT_NAME}_HEADERS
   include/hpp/bin-picking/fwd.hh
-  include/hpp/bin-picking/effector.hh)
+  include/hpp/bin-picking/effector.hh
+  include/hpp/bin-picking/handle.hh
+  )
 set(${PROJECT_NAME}_SOURCES
   src/effector.cc)
 add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES}
