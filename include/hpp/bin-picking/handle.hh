@@ -36,6 +36,10 @@
 
 namespace hpp{
 namespace bin_picking{
+/// Discretize a handle with a rotation degree of freedom
+/// \param handle a handle,
+/// \param nbHandles the number of discretized handles,
+/// \return a vector of discretized handles.
 std::vector<HandlePtr_t> discretizeHandle(const HandlePtr_t& handle,
                                           size_type nbHandles)
 {

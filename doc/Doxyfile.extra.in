@@ -1,0 +1,5 @@
+FILE_PATTERNS          = *.idl *.hh
+
+INPUT                  = @CMAKE_SOURCE_DIR@/include \
+                         @CMAKE_SOURCE_DIR@/corba/idl	  \
+                         @CMAKE_SOURCE_DIR@/doc

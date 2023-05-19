@@ -35,7 +35,11 @@ module hpp {
   module corbaserver {
     module bin_picking {
       interface BinPicking {
-        /// Create a rigid body object containing the geometries of an end effector
+        /// \{
+        /// Effectors
+
+        /// Create a rigid object containing the geometries of an end effector
+        ///
         /// The geometries belonging to the joints that are fixed with respect
         /// to the \link hpp::pinocchio::Gripper gripper are gathered with their
         /// relative pose with respect to the gripper frame.
@@ -67,6 +71,11 @@ module hpp {
         boolean collisionTest(in string name, in string handle, in floatSeq q,
                               out string report)
           raises(Error);
+        /// \}
+
+        /// \{
+        /// Handles
+
         /// Discretize handle
         /// Create several handles by discretizing the free axis of rotation.
         /// \param name name of the handle,
@@ -76,11 +85,10 @@ module hpp {
         ///       of freedom.
         /// \note new handles are created and added to the problem solver.
         void discretizeHandle(in string name, in long nbHandles) raises(Error);
+        /// \}
       };
     }; // interface BinPicking
   }; // module bin_picking
 }; // module hpp
 
 #endif // HPP_BIN_PICKING_CORBA_BIN_PICKING_HH
-
-
