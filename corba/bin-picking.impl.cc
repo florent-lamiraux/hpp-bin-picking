@@ -120,7 +120,8 @@ void BinPicking::addObstacleToEffector(const char* effectorName,
 }
 
 CORBA::Boolean BinPicking::collisionTest(const char* name, const char* handle,
-      const ::hpp::floatSeq& q, CORBA::String_out report)
+    const ::hpp::floatSeq& q, CORBA::String_out report,
+    floatSeq_out gripperAxis)
 {
   try{
     EffectorPtr_t effector(getEffectorOrThrow(name));
@@ -135,11 +136,13 @@ CORBA::Boolean BinPicking::collisionTest(const char* name, const char* handle,
       throw Error(msg.c_str());
     }
     std::string collisionReport;
+    vector3_t ga;
     bool res(
         effector->collisionTest(h, corbaServer::floatSeqToVector(q),
-                                collisionReport)
+                                collisionReport, ga)
         );
     report = CORBA::string_dup(collisionReport.c_str());
+    gripperAxis = vectorToFloatSeq(ga);
     return res;
   } catch(const std::exception &exc){
     throw Error(exc.what());

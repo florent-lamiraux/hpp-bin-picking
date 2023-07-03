@@ -77,10 +77,12 @@ public:
   /// \param clearance offset applied along -x axis to test pregrasp
   ///        configurations,
   /// \retval report validation report with information in case of collision
+  /// \retval gripperAxis vector of coordinates of the x-axis of the gripper
+  ///         in the world frame.
   /// \return true if there is a collision.
   /// \note pregrasp pose of the effector is also tested.
   bool collisionTest(const HandlePtr_t &handle, const Configuration_t& q,
-                     std::string& report);
+                     std::string& report, vectorOut_t gripperAxis);
   /// Print object in a stream;
   virtual std::ostream& print(std::ostream& os) const;
 protected:

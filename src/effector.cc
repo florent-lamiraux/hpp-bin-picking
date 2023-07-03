@@ -114,7 +114,7 @@ void Effector::addObstacle(const std::string& name, double securityMargin)
 }
 
 bool Effector::collisionTest(const HandlePtr_t &handle,
-    const Configuration_t& q, std::string& report)
+    const Configuration_t& q, std::string& report, vectorOut_t gripperAxis)
 {
   // Compute forward kinematics;
   ::pinocchio::forwardKinematics(model_, data_, q);
@@ -132,6 +132,7 @@ bool Effector::collisionTest(const HandlePtr_t &handle,
   assert(model_.existFrame(handle->name()));
   FrameIndex hid(model_.getFrameId(handle->name()));
   SE3 gripperPose(data_.oMf[hid]);
+  gripperAxis = gripperPose.rotation().col(0);
   // Test grasp
   for(auto obstacle : obstacles_) {
     // recover pose of obstacle

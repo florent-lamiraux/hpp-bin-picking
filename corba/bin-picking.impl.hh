@@ -49,7 +49,8 @@ public:
   virtual void addObstacleToEffector(const char* effectorName,
       const char* obstacleName, double securityMargin);
   virtual ::CORBA::Boolean collisionTest(const char* name, const char* handle,
-      const ::hpp::floatSeq& q, CORBA::String_out report);
+      const ::hpp::floatSeq& q, CORBA::String_out report,
+      floatSeq_out gripperAxis);
   virtual void discretizeHandle(const char* name, CORBA::Long nbHandles);
 private:
   void updateEffectors();

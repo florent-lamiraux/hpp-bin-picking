@@ -63,13 +63,15 @@ module hpp {
         /// \param handle name of the handle the gripper is aligned with,
         /// \param q configuration of the system,
         /// \retval report message in case of collision,
+        /// \retval gripperAxis vector of coordinates of the x-axis of the
+        ///         gripper in the world frame.
         /// \return true if there is a collision.
         /// \note the configuration does not neet to specify all the robot
         ///       and object configurations, but only those that have been
         ///       added as obstacle to the effector and the one that holds the
         ///       handle.
         boolean collisionTest(in string name, in string handle, in floatSeq q,
-                              out string report)
+                              out string report, out floatSeq gripperAxis)
           raises(Error);
         /// \}
 
