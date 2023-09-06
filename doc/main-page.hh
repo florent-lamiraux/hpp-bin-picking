@@ -1,6 +1,7 @@
 /// \mainpage hpp-bin-picking documentation
 ///
-/// This paper provides some tools to address bin-picking issues. It is composed
+/// This package provides some tools to address bin-picking issues. It is
+/// composed
 /// of a library and a \link hpp::corbaServer::ServerPlugin plugin \endlink
 /// implementing an \link hpp::corbaserver::bin_picking::BinPicking
 /// idl interface \endlink.

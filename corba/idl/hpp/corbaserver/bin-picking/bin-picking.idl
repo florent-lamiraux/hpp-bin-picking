@@ -41,8 +41,8 @@ module hpp {
         /// Create a rigid object containing the geometries of an end effector
         ///
         /// The geometries belonging to the joints that are fixed with respect
-        /// to the \link hpp::pinocchio::Gripper gripper are gathered with their
-        /// relative pose with respect to the gripper frame.
+        /// to the \link hpp::pinocchio::Gripper gripper \endlink are gathered
+	/// with their relative pose with respect to the gripper frame.
         ///
         /// \param name name of the effector that is created,
         /// \param gripperName name of the gripper,
